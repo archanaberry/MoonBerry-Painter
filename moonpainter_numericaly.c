@@ -213,6 +213,136 @@ void mpn_init(void) {
     mpn_state.feedrate = 1000;
 }
 
+// Handler function implementations
+static void cmd_end(char **tokens, int nt) {
+    mpn_state.has_end = 1;
+}
+static void cmd_wait(char **tokens, int nt) {
+    if (nt == 2) {
+        int ms = atoi(tokens[1]);
+        mb_wait(ms);
+    }
+}
+static void cmd_feedrate(char **tokens, int nt) {
+    if (nt == 2) {
+        int f = atoi(tokens[1]);
+        mpn_state.feedrate = f;
+        mb_set_feedrate(f);
+    }
+}
+static void cmd_stock(char **tokens, int nt) {
+    if (nt == 2) {
+        mb_stock_color(tokens[1]);
+    }
+}
+static void cmd_default_color(char **tokens, int nt) {
+    if (nt == 2) {
+        mb_set_default_color(tokens[1]);
+    }
+}
+static void cmd_color(char **tokens, int nt) {
+    if (nt == 2) {
+        mb_set_color(tokens[1]);
+    }
+}
+static void cmd_move(char **tokens, int nt) {
+    if (nt >= 3) {
+        float x = atof(tokens[1] + (tokens[1][0]=='X'));
+        float y = atof(tokens[2] + (tokens[2][0]=='Y'));
+        mb_move(x, y);
+    }
+}
+static void cmd_draw(char **tokens, int nt) {
+    if (nt >= 3) {
+        float x = atof(tokens[1] + (tokens[1][0]=='X'));
+        float y = atof(tokens[2] + (tokens[2][0]=='Y'));
+        mb_draw(x, y);
+    }
+}
+static void cmd_drop(char **tokens, int nt) {
+    float z = (nt == 2 ? atof(tokens[1] + (tokens[1][0]=='Z')) : mpn_state.default_drop);
+    mpn_state.z = z;
+    mb_drop(z);
+}
+static void cmd_lift(char **tokens, int nt) {
+    float z = (nt == 2 ? atof(tokens[1] + (tokens[1][0]=='Z')) : mpn_state.default_lift);
+    mpn_state.z = z;
+    mb_lift(z);
+}
+static void cmd_pressure(char **tokens, int nt) {
+    if (nt == 2) {
+        float v = atof(tokens[1]);
+        mpn_state.z = v;
+        mb_drop(v);
+    }
+}
+static void cmd_axis(char **tokens, int nt) {
+    if (nt == 4 && strcmp(tokens[2], "RADIUS") == 0) {
+        mb_axis_declare(tokens[1], atof(tokens[3]));
+    }
+}
+static void cmd_rotate(char **tokens, int nt) {
+    if (nt == 3) {
+        mb_rotate(tokens[1], atof(tokens[2]));
+    }
+}
+static void cmd_bezier(char **tokens, int nt) {
+    if (nt == 7) {
+        mb_bezier(atof(tokens[1]+1),
+            atof(tokens[2]+1),
+            atof(tokens[3]+1),
+            atof(tokens[4]+1),
+            atof(tokens[5]+1),
+            atof(tokens[6]+1)
+        );
+    }
+}
+static void cmd_poly(char **tokens, int nt) {
+    if (nt >= 5) {
+        int pts = (nt - 1) / 2;
+        float coords[pts * 2];
+        for (int i = 0; i < pts; i++) {
+            coords[2*i] = atof(tokens[1+2*i]+1);
+            coords[2*i+1] = atof(tokens[2+2*i]+1);
+        }
+        mb_poly_start(coords, pts);
+    }
+}
+static void cmd_close(char **tokens, int nt) {
+    mb_poly_close();
+}
+static void cmd_hatch(char **tokens, int nt) {
+    if (nt == 7) {
+        float angle = atof(tokens[2]);
+        float spacing = atof(tokens[4]);
+        float x1 = atof(tokens[6]); // skipping literal REGION parsing for brevity
+        float y1 = atof(tokens[7]);
+        float x2 = atof(tokens[8]);
+        float y2 = atof(tokens[9]);
+        mb_hatch(angle, spacing, x1, y1, x2, y2);
+    }
+}
+static void cmd_crosshatch(char **tokens, int nt) {
+    if (nt == 6) {
+        float spacing = atof(tokens[2]);
+        float x1 = atof(tokens[4]);
+        float y1 = atof(tokens[5]);
+        float x2 = atof(tokens[6]);
+        float y2 = atof(tokens[7]);
+        mb_crosshatch(spacing, x1, y1, x2, y2);
+    }
+}
+static void cmd_scrumble(char **tokens, int nt) {
+    if (nt == 6) {
+        int density = atoi(tokens[2]);
+        float x1 = atof(tokens[4]);
+        float y1 = atof(tokens[5]);
+        float x2 = atof(tokens[6]);
+        float y2 = atof(tokens[7]);
+        mb_scrumble(density, x1, y1, x2, y2);
+    }
+}
+
 // Stub implementations - to be replaced by actual hardware control
 void mb_move(float x, float y)         { /* implement stepper X/Y */ }
 void mb_draw(float x, float y)         { /* implement drawing move */ }

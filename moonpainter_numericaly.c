@@ -118,91 +118,14 @@ void mpn_parse_line(char* line) {
         // Header: skip or verify version
         return;
     }
-    if (strcmp(tokens[0], "END") == 0) {
-        mpn_state.has_end = 1;
-        return;
+
+    for (cmd_entry_t *e = commands_table; e->name; e++) {
+        if (strcmp(tokens[0], e->name) == 0) {
+            e->handler(tokens, nt);
+            return;
+        }
     }
-    if (strcmp(tokens[0], "WAIT") == 0 && nt == 2) {
-        int ms = atoi(tokens[1]); mb_wait(ms); return;
-    }
-    if (strcmp(tokens[0], "F") == 0 && nt == 2) {
-        int f = atoi(tokens[1]); mpn_state.feedrate = f; mb_set_feedrate(f); return;
-    }
-    if (strcmp(tokens[0], "STOCK") == 0 && nt == 2) {
-        mb_stock_color(tokens[1]); return;
-    }
-    if (strcmp(tokens[0], "DEFAULT_COLOR") == 0 && nt == 2) {
-        mb_set_default_color(tokens[1]); return;
-    }
-    if (strcmp(tokens[0], "COLOR") == 0 && nt == 2) {
-        mb_set_color(tokens[1]); return;
-    }
-    if (strcmp(tokens[0], "MOVE") == 0 && nt >= 3) {
-        float x = atof(tokens[1] + (tokens[1][0]=='X')); 
-        float y = atof(tokens[2] + (tokens[2][0]=='Y')); 
-        mb_move(x, y); return;
-    }
-    if (strcmp(tokens[0], "DRAW") == 0 && nt >= 3) {
-        float x = atof(tokens[1] + (tokens[1][0]=='X')); 
-        float y = atof(tokens[2] + (tokens[2][0]=='Y')); 
-        mb_draw(x, y); return;
-    }
-    if (strcmp(tokens[0], "DROP") == 0) {
-        float z = (nt == 2 ? atof(tokens[1] + (tokens[1][0]=='Z')) : mpn_state.default_drop);
-        mpn_state.z = z; mb_drop(z); return;
-    }
-    if (strcmp(tokens[0], "LIFT") == 0) {
-        float z = (nt == 2 ? atof(tokens[1] + (tokens[1][0]=='Z')) : mpn_state.default_lift);
-        mpn_state.z = z; mb_lift(z); return;
-    }
-    if (strcmp(tokens[0], "PRESSURE") == 0 && nt == 2) {
-        float v = atof(tokens[1]); mpn_state.z = v; mb_drop(v); return;
-    }
-    if (strcmp(tokens[0], "AXIS") == 0 && nt == 4 && strcmp(tokens[2], "RADIUS") == 0) {
-        mb_axis_declare(tokens[1], atof(tokens[3])); return;
-    }
-    if (strcmp(tokens[0], "ROTATE") == 0 && nt == 3) {
-        mb_rotate(tokens[1], atof(tokens[2])); return;
-    }
-    if (strcmp(tokens[0], "BEZIER") == 0 && nt == 7) {
-        mb_bezier(atof(tokens[1]+1), atof(tokens[2]+1), atof(tokens[3]+1), atof(tokens[4]+1), atof(tokens[5]+1), atof(tokens[6]+1)); return;
-    }
-    if (strcmp(tokens[0], "POLY") == 0 && nt >= 5) {
-        int pts = (nt - 1) / 2;
-        float coords[pts * 2];
-        for (int i = 0; i < pts; i++) coords[2*i] = atof(tokens[1+2*i]+1), coords[2*i+1] = atof(tokens[2+2*i]+1);
-        mb_poly_start(coords, pts); return;
-    }
-    if (strcmp(tokens[0], "CLOSE") == 0) { mb_poly_close(); return; }
-    if (strcmp(tokens[0], "HATCH") == 0 && nt == 7) {
-        float angle = atof(tokens[2]);
-        float spacing = atof(tokens[4]);
-        float x1 = atof(tokens[6]); // skipping literal REGION parsing for brevity
-        float y1 = atof(tokens[7]);
-        float x2 = atof(tokens[8]);
-        float y2 = atof(tokens[9]);
-        mb_hatch(angle, spacing, x1, y1, x2, y2);
-        return;
-    }
-    if (strcmp(tokens[0], "CROSSHATCH") == 0 && nt == 6) {
-        float spacing = atof(tokens[2]);
-        float x1 = atof(tokens[4]);
-        float y1 = atof(tokens[5]);
-        float x2 = atof(tokens[6]);
-        float y2 = atof(tokens[7]);
-        mb_crosshatch(spacing, x1, y1, x2, y2);
-        return;
-    }
-    if (strcmp(tokens[0], "SCRUMBLE") == 0 && nt == 6) {
-        int density = atoi(tokens[2]);
-        float x1 = atof(tokens[4]);
-        float y1 = atof(tokens[5]);
-        float x2 = atof(tokens[6]);
-        float y2 = atof(tokens[7]);
-        mb_scrumble(density, x1, y1, x2, y2);
-        return;
-    }
-    // Unknown or comment
+    // Unknown command: ignore or log
 }
 
 void mpn_init(void) {

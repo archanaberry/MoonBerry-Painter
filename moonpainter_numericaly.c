@@ -26,6 +26,56 @@ typedef struct {
     int has_end;
 } mpn_state_t;
 
+// Handler functions
+typedef void (*cmd_handler_t)(char** tokens, int nt);
+static void cmd_end(char **tokens, int nt);
+static void cmd_wait(char **tokens, int nt);
+static void cmd_feedrate(char **tokens, int nt);
+static void cmd_stock(char **tokens, int nt);
+static void cmd_default_color(char **tokens, int nt);
+static void cmd_color(char **tokens, int nt);
+static void cmd_move(char **tokens, int nt);
+static void cmd_draw(char **tokens, int nt);
+static void cmd_drop(char **tokens, int nt);
+static void cmd_lift(char **tokens, int nt);
+static void cmd_pressure(char **tokens, int nt);
+static void cmd_axis(char **tokens, int nt);
+static void cmd_rotate(char **tokens, int nt);
+static void cmd_bezier(char **tokens, int nt);
+static void cmd_poly(char **tokens, int nt);
+static void cmd_close(char **tokens, int nt);
+static void cmd_hatch(char **tokens, int nt);
+static void cmd_crosshatch(char **tokens, int nt);
+static void cmd_scrumble(char **tokens, int nt);
+
+typedef struct {
+    const char *name;
+    cmd_handler_t handler;
+} cmd_entry_t;
+
+static cmd_entry_t commands_table[] = {
+    {"END", cmd_end},
+    {"WAIT", cmd_wait},
+    {"F", cmd_feedrate},
+    {"STOCK", cmd_stock},
+    {"DEFAULT_COLOR", cmd_default_color},
+    {"COLOR", cmd_color},
+    {"MOVE", cmd_move},
+    {"DRAW", cmd_draw},
+    {"DROP", cmd_drop},
+    {"LIFT", cmd_lift},
+    {"PRESSURE", cmd_pressure},
+    {"AXIS", cmd_axis},
+    {"ROTATE", cmd_rotate},
+    {"BEZIER", cmd_bezier},
+    {"POLY", cmd_poly},
+    {"CLOSE", cmd_close},
+    {"HATCH", cmd_hatch},
+    {"CROSSHATCH", cmd_crosshatch},
+    {"SCRUMBLE", cmd_scrumble},
+    {NULL, NULL}
+};
+
 static mpn_state_t mpn_state;
 
 // Stub hardware interface functions

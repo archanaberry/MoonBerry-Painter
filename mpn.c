@@ -9,6 +9,7 @@
 
 #include "mpn.h"
 #include "mpn_handlers.h"
+#include <stdio.h>
 #include <string.h>
 
 // Utility: tokenize line
@@ -39,7 +40,8 @@ void mpn_parse_line(mpn_state_t *s, char* line) {
             return;
         }
     }
-    // Unknown command: ignore or log
+    if (strcmp(tokens[0], "#"))
+        fprintf(stderr, "UNKNOWN COMMAND: %s\n", tokens[0]);
 }
 
 void mpn_init(mpn_state_t *s) {

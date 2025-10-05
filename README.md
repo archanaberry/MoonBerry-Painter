@@ -27,6 +27,7 @@ Whether you’re building your own drawing robot, testing motion control algorit
 | 🧰 **Modular I/O Layer**             | Easily adapt to your own hardware interface.             |    ✅   |
 | 🧾 **Logging & Debug Mode**          | Built-in serial and runtime logger for debugging.        |    ✅   |
 | 🪴 **Open & Extendable**             | Fully open for customization, integration, and learning. |   🌸   |
+|🖋️ **Svg Preview and Svg Render converting | Fully compatibility convert vector format. | 🌱 |
 
 ---
 
@@ -47,7 +48,7 @@ You’ll need:
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/MoonBerry-Painter.git
+git clone https://github.com/archanaberry/MoonBerry-Painter.git
 cd MoonBerry-Painter
 
 # Build using GCC
@@ -91,9 +92,11 @@ int main(void) {
 MoonBerry-Painter
 │
 ├── core/              → Motion control & GPIO abstraction
-├── drivers/           → Hardware drivers (Teensy, Raspberry Pi, etc.)
+├── backend/           → Hardware drivers (Teensy, Raspberry Pi, etc.)
+├── driver/           → OS Driver Hardware for Linux Windows or Microcontroller OS.
 ├── parser/            → Command & vector interpreter
 ├── include/           → Public headers
+├── scripts/           → For etc, or python plugin
 └── examples/          → Usage demos & test code
 ```
 
@@ -141,16 +144,15 @@ Or load via configuration file (optional support planned).
 Contributions are welcome!
 Feel free to fork, modify, or extend modules such as:
 
-* **`core/motion.c`** for motion algorithms
-* **`drivers/teensy_gpio.c`** for microcontroller support
-* **`parser/path.c`** for vector data decoding
+* **`backend/teensy_gpio.c`** for microcontroller support
+* **`path.c`** for vector data decoding
 
 ---
 
 ## 📜 License
 
-**MIT License**
-This project is open-source and free to use in any personal or commercial project — just give credit if possible. 🌙
+**ABPL License**
+This project is open-source and free to use in any personal with berry personality or commercial project (With berry permission) — just give credit if possible. 🌱🌙
 
 ---
 
@@ -158,11 +160,6 @@ This project is open-source and free to use in any personal or commercial projec
 
 * **Author:** Archana Berry
 * **Email:** [archanaberry101originally@gmail.com](mailto:archanaberry101originally@gmail.com)
-* **Project Page:** [https://github.com/yourusername/MoonBerry-Painter](https://github.com/yourusername/MoonBerry-Painter)
+* **Project Page:** [https://github.com/archanaberry/MoonBerry-Painter](https://github.com/archanaberry/MoonBerry-Painter)
 
 > 🌸 *MoonBerry-Painter — where hardware meets art.*
-
----
-
-Would you like me to tailor the README tone more like **a technical whitepaper (formal & precise)** or **a developer-friendly GitHub project (casual but clean)**?
-I can also include **installation instructions for Teensy + Raspberry Pi setup** if you want.

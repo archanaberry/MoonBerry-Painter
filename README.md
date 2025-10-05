@@ -1,8 +1,10 @@
 # 🌙 MoonBerry-Painter
 
 **Pen Plotter Driver Library — Written in C (Open for You)**
-
 > 🌱🖌️ “Draw the world in code and ink.” ♡⁠(⁠Ӧ⁠ｖ⁠Ӧ⁠｡⁠)
+
+# Logo
+![MoonBerry Painter](archanaberry/moonberrypainter.png)
 
 ---
 
@@ -16,6 +18,9 @@ Whether you’re building your own drawing robot, testing motion control algorit
 ---
 
 ## ✨ Features
+✅ Successfully implement
+🌱 Growing implement 
+🌸 Customizable implement
 
 | Feature                              | Description                                              | Status |
 | :----------------------------------- | :------------------------------------------------------- | :----: |
@@ -27,7 +32,7 @@ Whether you’re building your own drawing robot, testing motion control algorit
 | 🧰 **Modular I/O Layer**             | Easily adapt to your own hardware interface.             |    ✅   |
 | 🧾 **Logging & Debug Mode**          | Built-in serial and runtime logger for debugging.        |    ✅   |
 | 🪴 **Open & Extendable**             | Fully open for customization, integration, and learning. |   🌸   |
-|🖋️ **Svg Preview and Svg Render converting | Fully compatibility convert vector format. | 🌱 |
+|🖋️ **Svg Preview and Svg Render converting** | Fully compatibility convert vector format. | 🌱 |
 
 ---
 
@@ -39,8 +44,9 @@ You’ll need:
 
 * **C Compiler** (GCC / Clang / ABCC / etc.)
 * **Make** or **CMake** (optional)
-* Access to GPIO (for Raspberry Pi / Teensy)
+* Access to GPIO (for Raspberry Pi / Teensy/Arduino)
 * Basic knowledge of C and embedded I/O
+* Hobbyst custom or DIY pen plotter hardware printing math with super highly precision curve and shapes
 
 ---
 
@@ -84,6 +90,22 @@ int main(void) {
 }
 ```
 
+```mpn
+; MoonBerry Painter Script
+; Converted from C example
+
+INIT                ; set up system (equivalent to mb_init)
+PEN UP              ; mb_set_pen(UP)
+
+MOVE X0 Y0          ; mb_move_to(0, 0)
+PEN DOWN            ; mb_set_pen(DOWN)
+DRAW X100 Y50       ; mb_draw_line(0, 0, 100, 50)
+
+PEN UP              ; mb_set_pen(UP)
+SHUTDOWN            ; mb_shutdown
+END
+```
+
 ---
 
 ## 🧬 Architecture
@@ -116,11 +138,12 @@ MoonBerry-Painter follows the **“Open Core, Modular Edge”** principle:
 
 ## 🧪 Hardware Compatibility
 
-| Platform | GPIO Type | Supported | Notes |
-| Raspberry Pi | BCM / sysfs / memory-mapped | ✅ | Recommended for prototype |
-| Teensy | Native I/O | ✅ | Best latency |
-| Arduino | via serial link | ⚙️ | Experimental |
-| Custom Board | Custom driver interface | 🧩 | Extend with your own driver |
+| Platform       | GPIO Type                  | Supported | Notes                     |
+|----------------|----------------------------|------------|----------------------------|
+| Raspberry Pi   | BCM / sysfs / memory-mapped | ✅         | Recommended for prototype  |
+| Teensy         | Native I/O                 | ✅         | Best latency               |
+| Arduino        | via serial link            | ⚙️         | Experimental               |
+| Custom Board   | Custom driver interface    | 🧩         | Extend with your own driver |
 
 ---
 
@@ -133,6 +156,17 @@ You can configure machine parameters via a simple header file or runtime config:
 #define MB_AXIS_Y_STEPS_PER_MM 80
 #define MB_FEEDRATE_DEFAULT   1200
 #define MB_PEN_DOWN_DELAY_MS  50
+```
+
+```mpn
+; MoonBerry Painter runtime setup
+CONFIG AXIS X.STEP_PER_MM 80
+CONFIG AXIS Y.STEP_PER_MM 80
+CONFIG FEEDRATE 1200
+CONFIG PEN.DELAY 50
+
+; Ready to draw
+INIT
 ```
 
 Or load via configuration file (optional support planned).
